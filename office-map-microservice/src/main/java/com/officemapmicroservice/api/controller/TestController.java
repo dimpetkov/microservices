@@ -1,11 +1,13 @@
-package com.officemapmicroservice.api.v1.controller;
+package com.officemapmicroservice.api.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/")
+@RestController()
+@RequestMapping("api/test")
 public class TestController {
-    @GetMapping("/")
+    @GetMapping
     public boolean isConnected() {
         return true;
     }

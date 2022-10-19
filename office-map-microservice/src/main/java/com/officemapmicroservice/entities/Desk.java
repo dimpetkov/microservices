@@ -10,9 +10,9 @@ public class Desk {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "desk_id")
-    private long deskId;
+    private Long deskId;
     @ManyToOne
-    @JoinColumn(name = "room_room_id")
+    @JoinColumn(name = "room_id")
     private Room room;
     private int deskNumber;
     private String status = AVAILABLE;
@@ -21,4 +21,7 @@ public class Desk {
     private EmployeeAllocation allocation;
 
 
+    public Long getDeskId() {
+        return deskId;
+    }
 }

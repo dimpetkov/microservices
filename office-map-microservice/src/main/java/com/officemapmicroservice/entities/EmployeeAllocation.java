@@ -10,7 +10,7 @@ import java.util.Date;
 public class EmployeeAllocation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long allocationId;
+    private Long allocationId;
     @CreationTimestamp
     private Date createdAt;
     private long employeeId;
@@ -18,4 +18,8 @@ public class EmployeeAllocation {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "desk_Id", referencedColumnName = "desk_id")
     private Desk desk;
+
+    public Desk getDesk() {
+        return desk;
+    }
 }
