@@ -142,3 +142,4 @@ services:
       - "8095"  
     depends_on:
       - postgres-working-schedule
+      
