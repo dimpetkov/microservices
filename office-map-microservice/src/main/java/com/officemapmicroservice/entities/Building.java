@@ -1,19 +1,26 @@
 package com.officemapmicroservice.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "buildings")
 public class Building {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long buildingId;
+    private Long buildingId;
     @ManyToOne
-    @JoinColumn(name = "city_city_id")
-    private City city;
+    @JoinColumn(name = "city_id")
+    private City cityName;
     private String buildingName;
+    @OneToMany(mappedBy = "building")
+    private List<Floor> floors;
 
     public City getCity() {
-        return city;
+        return cityName;
+    }
+
+    public String getBuildingName() {
+        return buildingName;
     }
 }
