@@ -1,0 +1,144 @@
+---
+version: '3'
+services:
+  ## PostgreSQL Docker Compose Config
+  postgres-employee-management-auth:
+    container_name: postgres-employee-management-auth
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres-employee-management-auth
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /data/postgres
+    expose:
+      - "5441"
+    ports:
+      - "5441:5441"
+    command: -p 5441
+    restart: unless-stopped
+
+  postgres-equipment-assignment:
+    container_name: postgres-equipment-assignment
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres-equipment-assignment
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /data/postgres
+    expose:
+      - "5442"
+    ports:
+      - "5442:5442"
+    command: -p 5442
+    restart: unless-stopped
+
+  postgres-messenger-attachments:
+    container_name: postgres-messenger-attachments
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres-messenger-attachments
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /data/postgres
+    expose:
+      - "5443"
+    ports:
+      - "5443:5443"
+    command: -p 5443
+    restart: unless-stopped
+
+  postgres-office-map-employee-placement:
+    container_name: postgres-office-map-employee-placement
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres-office-map-employee-placement
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /data/postgres
+    expose:
+      - "5444"
+    ports:
+      - "5444:5444"
+    command: -p 5444
+    restart: unless-stopped
+
+  postgres-working-schedule:
+    container_name: postgres-working-schedule
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres-working-schedule
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      PGDATA: /data/postgres
+    expose:
+      - "5445"
+    ports:
+      - "5445:5445"
+    command: -p 5445
+    restart: unless-stopped
+
+    # Services Docker Compose Config
+  employee-management-auth:
+    container_name: employee-management-auth
+    image: plamendragiev/employee-management-auth:latest 
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-employee-management-auth:5441/postgres-employee-management-auth
+    ports:
+      - 8091:8091
+    expose:
+      - "8091"
+    depends_on:
+      - postgres-employee-management-auth
+
+  equipment-assignment:
+    container_name: equipment-assignment
+    image: plamendragiev/equipment-assignment:latest 
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-equipment-assignment:5442/postgres-equipment-assignment
+    ports:
+      - 8092:8092
+    expose:
+      - "8092"
+    depends_on:
+      - postgres-equipment-assignment
+
+  messenger-attachments:
+    container_name: messenger-attachments
+    image: anniexp/messenger-attachments:latest 
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-messenger-attachments:5443/postgres-messenger-attachments
+    ports:
+      - 8093:8093
+    expose:
+      - "8093"
+    depends_on:
+      - postgres-messenger-attachments
+
+  office-map-employee-placement:
+    container_name: office-map-employee-placement
+    image: dimpetkovddp/office-map-employee-placement:latest 
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-office-map-employee-placement:5444/postgres-office-map-employee-placement
+    ports:
+      - 8094:8094
+    expose:
+      - "8094"  
+    depends_on:
+      - postgres-office-map-employee-placement
+
+  working-schedule:
+    container_name: working-schedule
+    image: inakirilova/working-schedule:latest 
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-working-schedule:5445/postgres-working-schedule
+    ports:
+      - 8095:8095
+    expose:
+      - "8095"  
+    depends_on:
+      - postgres-working-schedule
