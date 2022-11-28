@@ -1,6 +1,8 @@
 package com.officemap.dto;
 
-public class ComponentDto {
+import org.springframework.hateoas.RepresentationModel;
+
+public class ComponentDto extends RepresentationModel<ComponentDto> {
     private Long id;
     private String componentType;
     private String name;

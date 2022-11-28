@@ -1,36 +1,43 @@
 package com.officemap.authorization;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.officemap.authorization.userlogin.LoginRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-@Service
+import javax.validation.Valid;
+
+import static com.officemap.common.Url.URL_V2;
+
 @RestController
+@Tag(name = "Authorization Token Controller",
+        description = "Contains JWT validation. To generate a token, use the Login API - localhost:8091/api/v1/auth/login")
+@RequestMapping(URL_V2)
 public class AuthorizationController {
-    private final WebClient.Builder webClientBuilder;
 
-    @Autowired
-    public AuthorizationController(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
-    }
+    WebClient authorizationWebClient = WebClient.builder()
+//            .baseUrl("http://employee-management-auth:8091")
+            .baseUrl("http://localhost:8091")
+            .build();
 
-    @PostMapping
-    public void verifyTokenValidity(String authorizationToken) {
-        String response =  webClientBuilder.build().post()
-                .uri("http://employee-management-auth:8091/api/v1/secured/tokenValidator")
-                .header("Authorization", authorizationToken)
+    @Operation(summary = "Verify token validity")
+    @PostMapping("authorize")
+    public Object verifyTokenValidity(@RequestHeader("Authorization") String token) {
+       return authorizationWebClient.post().uri("api/v1/secured/tokenValidator")
+                .header("Authorization", token)
                 .retrieve()
-                .onStatus(httpStatus -> httpStatus.value() == HttpStatus.UNAUTHORIZED.value(),
-                        clientResponse -> Mono.error(new UnauthorizedTokenException("UNAUTHORIZED TOKEN")))
                 .bodyToMono(String.class)
                 .block();
-        ResponseEntity.ok(response);
     }
-    /* Token is valid
-    * Status code 200 */
+
+    @Operation(summary = "Login functionality, for testing purposes")
+    @PostMapping("login")
+    public Object loginUser(@RequestBody @Valid LoginRequest loginRequest) {
+        return authorizationWebClient.post().uri("api/v1/auth/login")
+                .bodyValue(loginRequest)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .block();
+    }
 }

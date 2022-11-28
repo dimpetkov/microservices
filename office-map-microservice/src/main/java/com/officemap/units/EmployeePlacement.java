@@ -27,6 +27,11 @@ public class EmployeePlacement {
         this.deskId = deskId;
     }
 
+    public EmployeePlacement(long employeeId, long deskId) {
+        this.employeeId = employeeId;
+        this.deskId = deskId;
+    }
+
     public Long getId() {
         return id;
     }

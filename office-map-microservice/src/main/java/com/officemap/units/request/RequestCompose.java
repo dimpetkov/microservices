@@ -28,6 +28,16 @@ public class RequestCompose {
 
     }
 
+    public RequestCompose(ComponentsEnum componentType, String name, long parentId, String details) {
+        this.componentType = componentType;
+        this.name = name;
+        this.details = details;
+        this.parentId = parentId;
+    }
+
+    public RequestCompose(Long deskId) {
+    }
+
     public ComponentsEnum getComponentType() {
         return componentType;
     }

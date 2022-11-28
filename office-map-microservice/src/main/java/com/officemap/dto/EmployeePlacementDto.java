@@ -1,8 +1,10 @@
 package com.officemap.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import java.util.Date;
 
-public class EmployeePlacementDto {
+public class EmployeePlacementDto extends RepresentationModel<EmployeePlacementDto> {
 
     private Long id;
     private Date allocationDate;

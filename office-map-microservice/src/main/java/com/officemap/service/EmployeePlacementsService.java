@@ -1,6 +1,6 @@
 package com.officemap.service;
 
-
+import com.officemap.controller.EmployeePlacementsController;
 import com.officemap.enumeration.ComponentsEnum;
 import com.officemap.units.request.RequestCompose;
 import com.officemap.dto.EmployeePlacementDto;
@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class EmployeePlacementsService {
@@ -33,7 +35,16 @@ public class EmployeePlacementsService {
         this.componentMapper = componentMapper;
     }
 
-    public List<EmployeePlacementDto> getPlacemetsDtoList() {
+    public Object getEmployeePlacementById(Long employeePlacementId) {
+        if(employeePlacementRepository.findById(employeePlacementId).isPresent()) {
+            EmployeePlacement employeePlacement = employeePlacementRepository.findById(employeePlacementId).get();
+            return employeePlacementMapper.employeePlacementEntityToDto(employeePlacement);
+        }else {
+            return "Placement ID: " + employeePlacementId + " is NOT FOUND";
+        }
+    }
+
+    public List<EmployeePlacementDto> getPlacementsDtoList() {
         List<EmployeePlacementDto> placementsDtoList = new ArrayList<>();
         employeePlacementRepository.findAll()
                 .forEach(placement -> placementsDtoList
@@ -42,9 +53,9 @@ public class EmployeePlacementsService {
     }
 
     public Object getPlacementByDeskId(Long deskId) {
-        if(componentRepository.findById(deskId).isPresent()) {
+        if(componentRepository.findById(deskId).isPresent() && componentRepository.findById(deskId).get().getComponentEnum() == ComponentsEnum.DESK) {
             String deskStatus = componentRepository.findById(deskId).get().getDetails();
-            if(deskStatus.contains(StatusEnum.AVAILABLE.getStatus())) {
+            if(deskStatus.contains(StatusEnum.OCCUPIED.getStatus())) {
                 return employeePlacementMapper
                         .employeePlacementEntityToDto(employeePlacementRepository.findByDeskId(deskId));
             } else {
@@ -54,11 +65,14 @@ public class EmployeePlacementsService {
         return "Desk ID: " + deskId + " is NOT FOUND";
     }
 
-    public Object getPlacementByEmployeeId(Long employeeId) {
+    public List<Object> getPlacementByEmployeeId(Long employeeId) {
         if(employeePlacementRepository.findByEmployeeId(employeeId) != null) {
-            return employeePlacementRepository.findByEmployeeId(employeeId);
+            List<EmployeePlacement> employeePlacements = employeePlacementRepository.findByEmployeeId(employeeId);
+            List<EmployeePlacementDto> employeePlacementDto = new ArrayList<>();
+            employeePlacements.forEach(placement -> employeePlacementDto.add(employeePlacementMapper.employeePlacementEntityToDto(placement)));
+            return List.of(employeePlacementDto);
         } else {
-            return "Employee ID: " + " is NOT FOUND";
+            return List.of("Employee ID: " + " is NOT FOUND");
         }
     }
 

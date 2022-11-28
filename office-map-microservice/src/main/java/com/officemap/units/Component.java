@@ -31,7 +31,6 @@ public class Component {
         this.details = details;
     }
 
-
     public Long getId() {
         return id;
     }

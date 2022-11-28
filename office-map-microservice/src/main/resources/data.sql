@@ -1,1 +1,0 @@
-CREATE DATABASE IF NOT EXISTS 'postgres-office-map-employee-placement';

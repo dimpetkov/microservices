@@ -62,12 +62,10 @@ public class ComponentsService {
     }
 
     public Object addComponent(RequestCompose request) {
+        if (request.getComponentType().equals(DESK)) {
+            request.setDetails(StatusEnum.AVAILABLE.getStatus());
+        }
         if(isRelationPossible(request)) {
-
-            if (request.getComponentType().equals(DESK)) {
-                request.setDetails(StatusEnum.AVAILABLE.getStatus());
-            }
-
             Component component = new Component();
             component.setComponentEnum(request.getComponentType());
             component.setType(request.getComponentType().getComponentType());
